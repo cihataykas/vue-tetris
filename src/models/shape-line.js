@@ -8,6 +8,8 @@ export default class ShapeLine extends Shape {
   constructor(x, y, map) {
     super(x, y, map);
 
+    this.id = 1;
+
     this.rotations = [
       [
         [0, 0, 0, 0],

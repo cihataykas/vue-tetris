@@ -21,8 +21,8 @@ export default {
   },
   mounted() {
     this.game = new Game();
-    this.game.addShape();
-    // this.game.start();
+    this.game.addRandomShape();
+    this.game.start();
   },
   destroyed() {
     this.game.destroy();

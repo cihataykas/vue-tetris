@@ -3,54 +3,66 @@
 // eslint-disable-next-line max-classes-per-file
 export default class Shape {
   constructor(x = 0, y = 0, gameMap) {
+    this.id = 0;
     this.x = x;
     this.y = y;
     this.tiles = [];
+    this.landed = false;
     this.gameMap = gameMap;
     this.rotations = [];
     this.currentRotation = 0;
     this.render();
   }
 
-  get height() {
-    return this.tiles.length;
+  land() {
+    this.tiles = this.tiles.map(row => row.map(tile => (tile === this.id ? -1 : tile)));
+    this.landed = true;
+    this.id = -1;
   }
 
-  get width() {
-    return this.tiles[0].length;
-  }
-
-  get mapWidth() {
-    return this.gameMap.tiles[0].length;
-  }
-
-  get mapHeight() {
-    return this.gameMap.tiles.length;
-  }
-
-  get bounds() {
-    return {
-      x1: this.x, y1: this.y, x2: this.x + this.height, y2: this.y + this.width,
-    };
-  }
-
-  isHit(directionX = 0, directionY = 0) {
+  detectHit(direction = 'down') {
     for (let i = 0; i < this.tiles.length; i++) {
-      const row = this.tiles[i];
-      for (let j = 0; j < row.length; j++) {
-        const tile = row[j];
-        const nextRow = this.gameMap.tiles[this.x + i + directionX];
+      for (let j = 0; j < this.tiles[i].length; j++) {
+        const tile = this.tiles[i][j];
 
-        if (!nextRow) {
-          return true;
-        }
+        if (tile === this.id) {
+          const tileX = this.x + i;
+          const tileY = this.y + j;
 
-        const tilePositionOnMap = nextRow[this.y + j + directionY];
+          if (direction === 'right') {
+            const rightCol = this.gameMap.tiles[tileX][tileY + 1];
+            const notSameId = rightCol !== this.id;
+            const notOccupied = rightCol !== 0;
+            if (notSameId && notOccupied) {
+              return true;
+            }
+          }
 
-        if (tile === 1 && (tilePositionOnMap === 1 || tilePositionOnMap === undefined)) {
-          console.log(tile);
-          console.log(tilePositionOnMap);
-          return true;
+          if (direction === 'left') {
+            const leftCol = this.gameMap.tiles[tileX][tileY - 1];
+            const notSameId = leftCol !== this.id;
+            const notOccupied = leftCol !== 0;
+
+            if (notSameId && notOccupied) {
+              return true;
+            }
+          }
+
+          if (direction === 'down') {
+            const downRow = this.gameMap.tiles[tileX + 1];
+
+            if (downRow === undefined) {
+              this.land();
+              return true;
+            }
+
+            const downCol = downRow[tileY];
+
+            if (downCol !== this.id && downCol !== 0 && downCol === -1) {
+              this.land();
+              return true;
+            }
+          }
         }
       }
     }
@@ -59,19 +71,18 @@ export default class Shape {
   }
 
   moveDown() {
-    if (!this.isHit(1, 0)) {
+    if (!this.detectHit() && !this.landed) {
       this.x += 1;
-
-      return true;
     }
 
-    return false;
+    return !this.landed;
   }
 
   moveLeft() {
-    if (!this.isHit(0, -1)) {
+    if (!this.detectHit('left')) {
       this.y -= 1;
 
+      this.detectHit();
       return true;
     }
 
@@ -79,9 +90,10 @@ export default class Shape {
   }
 
   moveRight() {
-    if (!this.isHit(0, 1)) {
+    if (!this.detectHit('right')) {
       this.y += 1;
 
+      this.detectHit();
       return true;
     }
 

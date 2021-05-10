@@ -48,19 +48,26 @@ export default class Game {
     }
   }
 
-  addShape(type = 0, y = 0) {
+  addShape(type = 1, y = 6) {
     const shape = this.createShape(type, 0, y);
 
     this.gameMap.addShape(shape);
+  }
+
+  addRandomShape() {
+    const randomShape = Math.round(Math.random() * 6);
+    const randomY = Math.round(1 + Math.random() * (this.gameMap.width - 5));
+    this.addShape(randomShape, randomY);
   }
 
   moveDownShapes() {
     const isMoveDown = this.gameMap.currentShape.moveDown();
 
     if (!isMoveDown) {
-      // this.addShape(Math.round(Math.random() * 5), 5);
-      this.addShape(1, 5);
+      this.addRandomShape();
     }
+
+    this.gameMap.update();
   }
 
   start() {
@@ -77,7 +84,7 @@ export default class Game {
   }
 
   loop() {
-    console.log('Yeah loop!');
+    this.moveDownShapes();
   }
 
   destroy() {

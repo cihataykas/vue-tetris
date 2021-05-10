@@ -16,6 +16,8 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-plusplus': 'off',
     'class-methods-use-this': 'off',
+    'no-param-reassign': 'off',
+    'arrow-parens': 'off',
   },
   overrides: [
     {
