@@ -32,8 +32,8 @@ export default class Shape {
           if (direction === 'right') {
             const rightCol = this.gameMap.tiles[tileX][tileY + 1];
             const notSameId = rightCol !== this.id;
-            const notOccupied = rightCol !== 0;
-            if (notSameId && notOccupied) {
+            const notEmpty = rightCol !== 0;
+            if (notSameId && notEmpty) {
               return true;
             }
           }
@@ -41,9 +41,9 @@ export default class Shape {
           if (direction === 'left') {
             const leftCol = this.gameMap.tiles[tileX][tileY - 1];
             const notSameId = leftCol !== this.id;
-            const notOccupied = leftCol !== 0;
+            const notEmpty = leftCol !== 0;
 
-            if (notSameId && notOccupied) {
+            if (notSameId && notEmpty) {
               return true;
             }
           }
