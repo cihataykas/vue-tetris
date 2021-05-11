@@ -2,9 +2,9 @@ export default class GameMap {
   constructor(width = 15, height = 20) {
     this.width = width;
     this.height = height;
-    this.shapes = [];
     this.currentShape = null;
     this.tiles = this.build();
+    this.landedTiles = this.build();
   }
 
   build() {
@@ -20,24 +20,57 @@ export default class GameMap {
     return map;
   }
 
-  update() {
-    this.tiles = this.build();
+  renderLandedTiles() {
+    for (let i = 0; i < this.tiles.length; i++) {
+      for (let j = 0; j < this.tiles[i].length; j++) {
+        this.tiles[i].splice(j, 1, this.landedTiles[i][j]);
+      }
+    }
+  }
 
-    for (const shape of this.shapes) {
-      const shapeDatas = shape.render();
+  checkAndRemoveLines() {
+    for (let i = 0; i < this.landedTiles.length; i++) {
+      const row = this.landedTiles[i];
 
-      for (const shapeData of shapeDatas) {
-        if (shapeData.value) {
-          this.tiles[shapeData.x][shapeData.y] = shapeData.value;
+      if (row.every(tile => tile === -1)) {
+        this.landedTiles.splice(i, 1);
+        this.landedTiles.unshift([...this.landedTiles[0]]);
+      }
+    }
+
+    this.renderLandedTiles();
+  }
+
+  renderShape() {
+    this.renderLandedTiles();
+
+    if (!this.currentShape) {
+      return;
+    }
+
+    const shapeDatas = this.currentShape.render();
+
+    for (const shapeData of shapeDatas) {
+      const { value, x, y, landed } = shapeData;
+
+      if (value) {
+        this.tiles[x][y] = value;
+
+        if (landed) {
+          this.landedTiles[x][y] = value;
+          this.checkAndRemoveLines();
         }
       }
     }
   }
 
-  addShape(shape) {
-    this.shapes.push(shape);
-    this.currentShape = shape;
+  update() {
+    this.renderShape();
+  }
 
+  addShape(shape) {
+    this.update();
+    this.currentShape = shape;
     this.update();
   }
 }

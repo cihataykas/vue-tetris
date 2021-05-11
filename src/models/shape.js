@@ -1,6 +1,5 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-plusplus */
-// eslint-disable-next-line max-classes-per-file
+import Tile from './tile';
+
 export default class Shape {
   constructor(x = 0, y = 0, gameMap) {
     this.id = 0;
@@ -14,8 +13,23 @@ export default class Shape {
     this.render();
   }
 
+  buildTiles(tiles) {
+    tiles = tiles || this.tiles;
+
+    for (const [rowIndex, row] of tiles.entries()) {
+      for (const [tileIndex, tile] of row.entries()) {
+        tiles[rowIndex][tileIndex] = new Tile(tile, this);
+      }
+    }
+  }
+
   land() {
-    this.tiles = this.tiles.map(row => row.map(tile => (tile === this.id ? -1 : tile)));
+    this.tiles = this.tiles.map(row => row.map(tile => {
+      tile.value = tile.value === this.id ? -1 : tile.value;
+
+      return tile;
+    }));
+
     this.landed = true;
     this.id = -1;
   }
@@ -25,12 +39,12 @@ export default class Shape {
       for (let j = 0; j < this.tiles[i].length; j++) {
         const tile = this.tiles[i][j];
 
-        if (tile === this.id) {
+        if (tile.value === this.id) {
           const tileX = this.x + i;
           const tileY = this.y + j;
 
           if (direction === 'right') {
-            const rightCol = this.gameMap.tiles[tileX][tileY + 1];
+            const rightCol = this.gameMap.landedTiles[tileX][tileY + 1];
             const notSameId = rightCol !== this.id || rightCol === -1;
             const notEmpty = rightCol !== 0;
 
@@ -40,7 +54,7 @@ export default class Shape {
           }
 
           if (direction === 'left') {
-            const leftCol = this.gameMap.tiles[tileX][tileY - 1];
+            const leftCol = this.gameMap.landedTiles[tileX][tileY - 1];
             const notSameId = leftCol !== this.id || leftCol === -1;
             const notEmpty = leftCol !== 0;
 
@@ -50,7 +64,7 @@ export default class Shape {
           }
 
           if (direction === 'down') {
-            const downRow = this.gameMap.tiles[tileX + 1];
+            const downRow = this.gameMap.landedTiles[tileX + 1];
 
             if (downRow === undefined) {
               this.land();
@@ -110,17 +124,18 @@ export default class Shape {
   render() {
     const renderData = [];
 
-    // eslint-disable-next-line no-plusplus
     for (let i = 0; i < this.tiles.length; i++) {
       const tileRow = this.tiles[i];
-      // eslint-disable-next-line no-plusplus
+
       for (let j = 0; j < tileRow.length; j++) {
         const tile = tileRow[j];
 
         const xPos = this.x + i;
         const yPos = this.y + j;
 
-        renderData.push({ x: xPos, y: yPos, value: tile });
+        renderData.push({
+          x: xPos, y: yPos, value: tile.value, landed: this.landed,
+        });
       }
     }
 

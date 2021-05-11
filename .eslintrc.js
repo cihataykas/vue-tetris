@@ -18,6 +18,7 @@ module.exports = {
     'class-methods-use-this': 'off',
     'no-param-reassign': 'off',
     'arrow-parens': 'off',
+    'object-curly-newline': 'off',
   },
   overrides: [
     {

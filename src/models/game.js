@@ -1,16 +1,12 @@
 import GameMap from './game-map';
-import ShapeLine from './shape-line';
-import ShapeSquare from './shape-square';
-import ShapeL from './shape-l';
-import ShapeT from './shape-t';
-import ShapeZ from './shape-z';
-import ShapeZReverse from './shape-z-reverse';
+import createShape from './create-shape';
 
 export default class Game {
   constructor() {
     this.gameMap = new GameMap();
     this.gameIntervalInstance = null;
     this.gameInterval = 500;
+    this.createShape = createShape.bind(this);
 
     document.addEventListener('keydown', this.onKeyDown.bind(this));
   }
@@ -29,28 +25,8 @@ export default class Game {
     this.gameMap.update();
   }
 
-  createShape(type, x, y) {
-    switch (type) {
-      case 1:
-        return new ShapeLine(x, y, this.gameMap);
-      case 2:
-        return new ShapeSquare(x, y, this.gameMap);
-      case 3:
-        return new ShapeL(x, y, this.gameMap);
-      case 4:
-        return new ShapeZ(x, y, this.gameMap);
-      case 5:
-        return new ShapeZReverse(x, y, this.gameMap);
-      case 6:
-        return new ShapeT(x, y, this.gameMap);
-      default:
-        return new ShapeSquare(x, y, this.gameMap);
-    }
-  }
-
   addShape(type = 1, y = 6) {
     const shape = this.createShape(type, 0, y);
-
     this.gameMap.addShape(shape);
   }
 
@@ -64,7 +40,8 @@ export default class Game {
     const isMoveDown = this.gameMap.currentShape.moveDown();
 
     if (!isMoveDown) {
-      this.addRandomShape();
+      // this.addRandomShape();
+      this.addShape(1);
     }
 
     this.gameMap.update();
