@@ -33,17 +33,16 @@ export default class GameMap {
       const row = this.landedTiles[i];
 
       if (row.every(tile => tile === -1)) {
+        this.currentShape = null;
         this.landedTiles.splice(i, 1);
         this.landedTiles.unshift([...this.landedTiles[0]]);
+
+        this.renderLandedTiles();
       }
     }
-
-    this.renderLandedTiles();
   }
 
   renderShape() {
-    this.renderLandedTiles();
-
     if (!this.currentShape) {
       return;
     }
@@ -58,14 +57,15 @@ export default class GameMap {
 
         if (landed) {
           this.landedTiles[x][y] = value;
-          this.checkAndRemoveLines();
         }
       }
     }
   }
 
   update() {
+    this.renderLandedTiles();
     this.renderShape();
+    this.checkAndRemoveLines();
   }
 
   addShape(shape) {

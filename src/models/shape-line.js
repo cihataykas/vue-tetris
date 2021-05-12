@@ -1,7 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-plusplus */
-// eslint-disable-next-line max-classes-per-file
-
 import Shape from './shape';
 
 export default class ShapeLine extends Shape {

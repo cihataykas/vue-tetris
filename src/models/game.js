@@ -12,6 +12,11 @@ export default class Game {
   }
 
   onKeyDown(e) {
+    // Prevents unexpected key actions when currentShape landed
+    if (!this.gameMap.currentShape) {
+      return;
+    }
+
     if (e.key === 'ArrowLeft') {
       this.gameMap.currentShape.moveLeft();
     } else if (e.key === 'ArrowRight') {
@@ -36,15 +41,18 @@ export default class Game {
     this.addShape(randomShape, randomY);
   }
 
-  moveDownShapes() {
-    const isMoveDown = this.gameMap.currentShape.moveDown();
+  moveDownCurrentShape() {
+    let isMoveDown;
 
-    if (!isMoveDown) {
-      // this.addRandomShape();
-      this.addShape(1);
+    if (this.gameMap.currentShape) {
+      isMoveDown = this.gameMap.currentShape.moveDown();
+    } else {
+      this.addRandomShape();
     }
 
-    this.gameMap.update();
+    if (isMoveDown === false) {
+      this.addRandomShape();
+    }
   }
 
   start() {
@@ -61,7 +69,8 @@ export default class Game {
   }
 
   loop() {
-    this.moveDownShapes();
+    this.moveDownCurrentShape();
+    this.gameMap.update();
   }
 
   destroy() {

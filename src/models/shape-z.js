@@ -1,4 +1,3 @@
-// eslint-disable-next-line max-classes-per-file
 import Shape from './shape';
 
 export default class ShapeZ extends Shape {

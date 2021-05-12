@@ -16,7 +16,7 @@ export default function createShape(type, x, y) {
       shape = new ShapeSquare(x, y, this.gameMap);
       break;
     case 3:
-      shape = ShapeL(x, y, this.gameMap);
+      shape = new ShapeL(x, y, this.gameMap);
       break;
     case 4:
       shape = new ShapeZ(x, y, this.gameMap);
