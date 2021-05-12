@@ -10,5 +10,12 @@ export default class ShapeSquare extends Shape {
       [2, 2],
       [2, 2],
     ];
+
+    this.rotations = [
+      [
+        [2, 2],
+        [2, 2],
+      ],
+    ];
   }
 }
