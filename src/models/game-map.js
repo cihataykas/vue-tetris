@@ -42,6 +42,10 @@ export default class GameMap {
     }
   }
 
+  get isEnd() {
+    return this.landedTiles[0].some(tile => tile !== 0);
+  }
+
   renderShape() {
     if (!this.currentShape) {
       return;
@@ -63,14 +67,18 @@ export default class GameMap {
   }
 
   update() {
-    this.renderLandedTiles();
-    this.renderShape();
-    this.checkAndRemoveLines();
+    if (!this.isEnd) {
+      this.renderLandedTiles();
+      this.renderShape();
+      this.checkAndRemoveLines();
+    }
   }
 
   addShape(shape) {
-    this.update();
-    this.currentShape = shape;
-    this.update();
+    if (!this.isEnd) {
+      this.update();
+      this.currentShape = shape;
+      this.update();
+    }
   }
 }

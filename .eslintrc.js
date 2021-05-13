@@ -19,6 +19,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'arrow-parens': 'off',
     'object-curly-newline': 'off',
+    'no-unused-expressions': 'off',
   },
   overrides: [
     {

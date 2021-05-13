@@ -9,6 +9,7 @@ export default class Game {
     this.createShape = createShape.bind(this);
 
     document.addEventListener('keydown', this.onKeyDown.bind(this));
+    this.gameMap.onEnd = this.onEnd.bind(this);
   }
 
   onKeyDown(e) {
@@ -28,6 +29,12 @@ export default class Game {
     }
 
     this.gameMap.update();
+  }
+
+  onEnd() {
+    this.stop();
+    document.removeEventListener('keydown', this.onKeyDown);
+    console.log('end');
   }
 
   addShape(type = 1, y = 6) {
@@ -56,11 +63,8 @@ export default class Game {
   }
 
   start() {
-    this.gameIntervalInstance = setTimeout(() => {
-      if (this.gameIntervalInstance) {
-        this.loop();
-        this.start();
-      }
+    this.gameIntervalInstance = setInterval(() => {
+      this.loop();
     }, this.gameInterval);
   }
 
@@ -69,8 +73,12 @@ export default class Game {
   }
 
   loop() {
-    this.moveDownCurrentShape();
-    this.gameMap.update();
+    if (this.gameMap.isEnd) {
+      this.stop();
+    } else {
+      this.moveDownCurrentShape();
+      this.gameMap.update();
+    }
   }
 
   destroy() {
