@@ -116,6 +116,10 @@ export default class Shape {
   }
 
   rotate() {
+    if (this.detectHit('top') || this.detectHit('right') || this.detectHit('bottom') || this.detectHit('left')) {
+      return;
+    }
+
     this.currentRotation++;
     const next = this.currentRotation % this.rotations.length;
     this.tiles = this.rotations[next];
