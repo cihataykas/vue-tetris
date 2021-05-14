@@ -5,6 +5,7 @@ export default class Shape {
     this.id = 0;
     this.x = x;
     this.y = y;
+    this.color = this.getRandomColor();
     this.tiles = [];
     this.landed = false;
     this.gameMap = gameMap;
@@ -18,9 +19,23 @@ export default class Shape {
 
     for (const [rowIndex, row] of tiles.entries()) {
       for (const [tileIndex, tile] of row.entries()) {
-        tiles[rowIndex][tileIndex] = new Tile(tile, this);
+        tiles[rowIndex][tileIndex] = new Tile(tile, this.color);
       }
     }
+  }
+
+  getRandomColor() {
+    const colors = [
+      '#df451f',
+      '#0ec6df',
+      '#d6932e',
+      '#107fe1',
+      '#c82cc6',
+      '#52e211',
+      '#d0bf22',
+    ];
+
+    return colors[Math.round(Math.random() * (colors.length - 1))];
   }
 
   land() {
@@ -44,7 +59,7 @@ export default class Shape {
           const tileY = this.y + j;
 
           if (direction === 'right') {
-            const rightCol = this.gameMap.landedTiles[tileX][tileY + 1];
+            const rightCol = this.gameMap.landedTiles[tileX][tileY + 1]?.value;
             const notSameId = rightCol !== this.id || rightCol === -1;
             const notEmpty = rightCol !== 0;
 
@@ -54,7 +69,7 @@ export default class Shape {
           }
 
           if (direction === 'left') {
-            const leftCol = this.gameMap.landedTiles[tileX][tileY - 1];
+            const leftCol = this.gameMap.landedTiles[tileX][tileY - 1]?.value;
             const notSameId = leftCol !== this.id || leftCol === -1;
             const notEmpty = leftCol !== 0;
 
@@ -71,7 +86,7 @@ export default class Shape {
               return true;
             }
 
-            const downCol = downRow[tileY];
+            const downCol = downRow[tileY]?.value;
 
             if (downCol !== this.id && downCol !== 0 && downCol === -1) {
               this.land();

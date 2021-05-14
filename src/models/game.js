@@ -34,7 +34,6 @@ export default class Game {
   onEnd() {
     this.stop();
     document.removeEventListener('keydown', this.onKeyDown);
-    console.log('end');
   }
 
   addShape(type = 1, y = 6) {
