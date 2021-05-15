@@ -1,12 +1,14 @@
 import Tile from './tile';
 
 export default class GameMap {
-  constructor(width = 15, height = 20) {
+  constructor(game, width = 15, height = 20) {
+    this.game = game;
     this.width = width;
     this.height = height;
     this.currentShape = null;
     this.tiles = this.build();
     this.landedTiles = this.build();
+    this.removeLineTimeout = null;
   }
 
   build() {
@@ -35,11 +37,25 @@ export default class GameMap {
       const row = this.landedTiles[i];
 
       if (row.every(tile => tile.value === -1)) {
-        this.currentShape = null;
-        this.landedTiles.splice(i, 1);
-        this.landedTiles.unshift([...this.landedTiles[0]]);
+        this.game.pause();
+
+        row.forEach(tile => {
+          tile.animationClass = 'animate__animated animate__zoomOut';
+        });
 
         this.renderLandedTiles();
+
+        if (this.removeLineTimeout) {
+          clearTimeout(this.removeLineTimeout);
+        }
+
+        this.removeLineTimeout = setTimeout(() => {
+          this.currentShape = null;
+          this.landedTiles.splice(i, 1);
+          this.landedTiles.unshift([...this.landedTiles[0]]);
+
+          this.game.resume();
+        }, 1000);
       }
     }
   }
@@ -57,10 +73,10 @@ export default class GameMap {
     const shapeDatas = this.currentShape.render();
 
     for (const shapeData of shapeDatas) {
-      const { value, x, y, landed } = shapeData;
+      const { value, x, y, landed, animationClass } = shapeData;
 
       if (value) {
-        const newTile = new Tile(value, this.currentShape.color);
+        const newTile = new Tile(value, this.currentShape.color, animationClass);
         this.tiles[x][y] = newTile;
 
         if (landed) {

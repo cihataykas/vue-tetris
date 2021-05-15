@@ -11,6 +11,7 @@ export default class Shape {
     this.gameMap = gameMap;
     this.rotations = [];
     this.currentRotation = 0;
+    this.animationTimeout = null;
     this.render();
   }
 
@@ -38,9 +39,39 @@ export default class Shape {
     return colors[Math.round(Math.random() * (colors.length - 1))];
   }
 
+  addAnimationClass(className, duration = 1000, cb) {
+    if (this.animationTimeout) {
+      clearTimeout(this.animationTimeout);
+    }
+
+    this.tiles.forEach(row => {
+      row.forEach(tile => {
+        if (tile.value !== 0) {
+          tile.addAnimationClass(className);
+        }
+      });
+    });
+
+    this.animationTimeout = setTimeout(() => {
+      this.animationTimeout = null;
+
+      this.tiles.forEach(row => {
+        row.forEach(tile => {
+          if (tile.value !== 0) {
+            tile.animationClass = '';
+          }
+        });
+      });
+
+      cb && cb();
+    }, duration);
+  }
+
   land() {
     this.tiles = this.tiles.map(row => row.map(tile => {
       tile.value = tile.value === this.id ? -1 : tile.value;
+
+      tile.animationClass = 'animate__animated animate__faster animate__headShake';
 
       return tile;
     }));
@@ -153,7 +184,7 @@ export default class Shape {
         const yPos = this.y + j;
 
         renderData.push({
-          x: xPos, y: yPos, value: tile.value, landed: this.landed,
+          x: xPos, y: yPos, value: tile.value, landed: this.landed, animationClass: tile.animationClass,
         });
       }
     }

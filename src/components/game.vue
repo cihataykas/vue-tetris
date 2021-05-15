@@ -1,22 +1,23 @@
 <template>
   <div class="vue-tetris theme-light">
     <div v-if="game" class="tile-container">
-    <div
-      v-for="(tileRow, tileRowIndex) in tiles" :key="tileRowIndex"
-      class="tile-row"
-    >
-     <div
-      v-for="(tile, tileIndex) in tileRow" :key="tileIndex"
-      :class="['tile', { active: tile.value }]"
-      :style="{
-        background: `linear-gradient(to right bottom, rgb(255, 255, 255) 50%, ${tile.color} 50%)`,
-      }"
+      <div
+        v-for="(tileRow, tileRowIndex) in tiles" :key="tileRowIndex"
+        class="tile-row"
       >
-       <div :style="{ backgroundColor: tile.color }" class="tile-part" />
-       <span v-if="showTileIds">{{ tile.value }}</span>
+      <div
+        v-for="(tile, tileIndex) in tileRow" :key="tileIndex"
+        :class="['tile', tile.animationClass, { active: tile.value }]"
+        :style="{
+          background: `linear-gradient(to right bottom, rgb(255, 255, 255) 50%, ${tile.color} 50%)`,
+        }"
+        >
+        <div :style="{ backgroundColor: tile.color }" class="tile-part" />
+        <span v-if="showTileIds">{{ tile.value }}</span>
+        </div>
       </div>
     </div>
-  </div>
+    <div class="bg" />
   </div>
 </template>
 
@@ -38,8 +39,7 @@ export default {
   },
   mounted() {
     this.game = new Game();
-    this.game.addRandomShape();
-    this.game.start();
+    this.game.addShape();
   },
   destroyed() {
     this.game.destroy();
@@ -51,6 +51,20 @@ export default {
 
   .vue-tetris {
     margin: auto;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: url('~@/assets/bg.png');
+    background-size: 128px;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: .1;
   }
 
   .tile-container {
@@ -76,11 +90,11 @@ export default {
 
     &.active {
       background: red;
+      z-index: 1;
     }
   }
 
   .theme-light {
-    background: rgb(255, 255, 255);
     box-shadow: 0 0 23px #e2e2e2;
     border-radius: 5px;
 

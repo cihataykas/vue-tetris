@@ -3,16 +3,28 @@ import createShape from './create-shape';
 
 export default class Game {
   constructor() {
-    this.gameMap = new GameMap();
+    this.gameMap = new GameMap(this);
     this.gameIntervalInstance = null;
     this.gameInterval = 500;
     this.createShape = createShape.bind(this);
+    this.gameMap.onEnd = this.onEnd.bind(this);
+    this.controlsActive = false;
 
     document.addEventListener('keydown', this.onKeyDown.bind(this));
-    this.gameMap.onEnd = this.onEnd.bind(this);
+  }
+
+  activateControls() {
+    this.controlsActive = true;
+  }
+
+  deactivateControls() {
+    this.controlsActive = false;
   }
 
   onKeyDown(e) {
+    if (!this.controlsActive) {
+      return;
+    }
     // Prevents unexpected key actions when currentShape landed
     if (!this.gameMap.currentShape) {
       return;
@@ -37,8 +49,13 @@ export default class Game {
   }
 
   addShape(type = 1, y = 6) {
+    this.pause();
     const shape = this.createShape(type, 0, y);
     this.gameMap.addShape(shape);
+    shape.addAnimationClass('animate__bounceInDown', 800, () => {
+      this.resume();
+    });
+    this.gameMap.renderShape();
   }
 
   addRandomShape() {
@@ -47,17 +64,27 @@ export default class Game {
     this.addShape(randomShape, randomY);
   }
 
+  pause() {
+    this.deactivateControls();
+    this.stop();
+  }
+
+  resume() {
+    this.activateControls();
+    this.start();
+  }
+
   moveDownCurrentShape() {
     let isMoveDown;
 
     if (this.gameMap.currentShape) {
       isMoveDown = this.gameMap.currentShape.moveDown();
     } else {
-      this.addRandomShape();
+      this.addShape();
     }
 
     if (isMoveDown === false) {
-      this.addRandomShape();
+      this.addShape();
     }
   }
 

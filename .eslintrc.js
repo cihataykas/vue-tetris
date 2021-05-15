@@ -20,6 +20,7 @@ module.exports = {
     'arrow-parens': 'off',
     'object-curly-newline': 'off',
     'no-unused-expressions': 'off',
+    'max-len': 'off',
   },
   overrides: [
     {
