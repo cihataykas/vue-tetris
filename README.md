@@ -1,4 +1,6 @@
-# vue-tetris
+# Vue Tetris
+
+it exists because it is fun
 
 ## Project setup
 ```
