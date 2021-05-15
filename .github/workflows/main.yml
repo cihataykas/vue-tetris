@@ -1,14 +1,7 @@
-name: CI
+name: Build and Deploy Vue Tetris
 
- on:
+on:
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Deploy'  
 
 jobs:
   build-and-deploy:
