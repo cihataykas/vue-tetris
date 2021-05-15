@@ -1,7 +1,7 @@
 import Tile from './tile';
 
 export default class GameMap {
-  constructor(game, width = 15, height = 20) {
+  constructor(game, width = 16, height = 20) {
     this.game = game;
     this.width = width;
     this.height = height;
