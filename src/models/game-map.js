@@ -33,30 +33,37 @@ export default class GameMap {
   }
 
   checkAndRemoveLines() {
+    const rowsIndexsToRemove = [];
     for (let i = 0; i < this.landedTiles.length; i++) {
       const row = this.landedTiles[i];
 
       if (row.every(tile => tile.value === -1)) {
+        rowsIndexsToRemove.push(i);
         this.game.pause();
 
         row.forEach(tile => {
-          tile.animationClass = 'animate__animated animate__zoomOut';
+          tile.animationClass = 'animate__animated animate__faster animate__zoomOut';
         });
 
         this.renderLandedTiles();
+      }
+    }
 
-        if (this.removeLineTimeout) {
-          clearTimeout(this.removeLineTimeout);
+    if (rowsIndexsToRemove.length) {
+      this.currentShape = null;
+
+      if (this.removeLineTimeout) {
+        clearTimeout(this.removeLineTimeout);
+      }
+
+      this.removeLineTimeout = setTimeout(() => {
+        for (const rowIndex of rowsIndexsToRemove) {
+          this.landedTiles.splice(rowIndex, 1);
+          this.landedTiles.unshift([...this.landedTiles[0]]);
         }
 
-        this.removeLineTimeout = setTimeout(() => {
-          this.currentShape = null;
-          this.landedTiles.splice(i, 1);
-          this.landedTiles.unshift([...this.landedTiles[0]]);
-
-          this.game.resume();
-        }, 1000);
-      }
+        this.game.resume();
+      }, 250);
     }
   }
 

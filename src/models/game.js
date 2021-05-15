@@ -89,6 +89,10 @@ export default class Game {
   }
 
   start() {
+    if (this.gameIntervalInstance) {
+      this.stop();
+    }
+
     this.gameIntervalInstance = setInterval(() => {
       this.loop();
     }, this.gameInterval);
