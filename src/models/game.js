@@ -80,11 +80,11 @@ export default class Game {
     if (this.gameMap.currentShape) {
       isMoveDown = this.gameMap.currentShape.moveDown();
     } else {
-      this.addShape();
+      this.addRandomShape();
     }
 
     if (isMoveDown === false) {
-      this.addShape();
+      this.addRandomShape();
     }
   }
 

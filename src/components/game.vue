@@ -39,7 +39,7 @@ export default {
   },
   mounted() {
     this.game = new Game();
-    this.game.addShape();
+    this.game.addRandomShape();
   },
   destroyed() {
     this.game.destroy();
