@@ -1,6 +1,6 @@
 # Vue Tetris
 
-it exists because it is fun
+it exists because why not
 
 ## Project setup
 ```
