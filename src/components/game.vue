@@ -21,12 +21,14 @@
     <div v-if="menu" ref="menu" :class="['start-menu animate__animated', { animate__bounceInDown: menuAnim, animate__bounceOutDown: !menuAnim, } ]">
       <button v-if="menuType === 1" class="button" @click="onClickPlay">Click to Play!</button>
       <div v-if="menuType === 2">
-        <div :style="{ fontSize: '20px', fontWeight: 'bold', color: 'green' }">Your Score is {{ game.score }}</div>
+        <div :style="{ fontSize: '28px', fontWeight: 'bold', color: 'white', background: 'black', padding: '10px' }">
+          Your Score is {{ game.score }}
+        </div>
         <button class="button" @click="onClickPlay">Play Again!</button>
       </div>
     </div>
     <div v-if="bottomBar" class="bottom-bar animate__animated animate__bounceInUp">
-      <div>SCORE: {{ game.score }}</div>
+      <div class="animate__animated animate__tada" :key="game.score" >SCORE: {{ game.score }}</div>
     </div>
   </div>
 </template>
@@ -195,15 +197,15 @@ export default {
     }
 
     .start-menu {
-      background: rgba(255, 255, 255, 1);
+      background: rgba(255, 255, 255, .76);
     }
 
     .button {
       font-size: 50px;
       padding: 10px;
-      background: #fff;
+      background: transparent;
       font-weight: bold;
-      color: rgb(102, 102, 102);
+      color: black;
       cursor: pointer;
       border: none;
       outline: none;
