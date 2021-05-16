@@ -10,7 +10,6 @@ export default class Game {
     this.gameMap.onEnd = this.onEnd.bind(this);
     this.controlsActive = false;
     this.score = 0;
-
     document.addEventListener('keydown', this.onKeyDown.bind(this));
   }
 

@@ -19,9 +19,13 @@
     </div>
     <div class="bg" />
     <div v-if="menu" ref="menu" :class="['start-menu animate__animated', { animate__bounceInDown: menuAnim, animate__bounceOutDown: !menuAnim, } ]">
-      <button class="button" @click="onClickPlay">Click to Play!</button>
+      <button v-if="menuType === 1" class="button" @click="onClickPlay">Click to Play!</button>
+      <div v-if="menuType === 2">
+        <div :style="{ fontSize: '20px', fontWeight: 'bold', color: 'green' }">Your Score is {{ game.score }}</div>
+        <button class="button" @click="onClickPlay">Play Again!</button>
+      </div>
     </div>
-    <div v-show="bottomBar" class="bottom-bar animate__animated animate__bounceInUp">
+    <div v-if="bottomBar" class="bottom-bar animate__animated animate__bounceInUp">
       <div>SCORE: {{ game.score }}</div>
     </div>
   </div>
@@ -33,6 +37,9 @@ import Game from '../models';
 
 export default {
   computed: {
+    isEnd() {
+      return this.game?.gameMap?.isEnd;
+    },
     tiles() {
       return this.game.gameMap.tiles;
     },
@@ -43,13 +50,15 @@ export default {
       height: 20,
       bottomBar: false,
       menu: true,
+      menuType: 1,
       menuAnim: true,
       showTileIds: false,
       game: null,
     };
   },
   mounted() {
-    this.game = new Game(this.width, this.height);
+    this.createNewGame();
+
     this.$refs.menu.addEventListener('animationend', () => {
       if (!this.menuAnim) {
         this.menu = false;
@@ -64,7 +73,24 @@ export default {
     onClickPlay() {
       this.menuAnim = false;
       this.bottomBar = true;
+
+      if (this.isEnd) {
+        this.createNewGame();
+      }
+
       this.game.start();
+    },
+    createNewGame() {
+      this.game = new Game(this.width, this.height);
+    },
+  },
+  watch: {
+    isEnd(value) {
+      if (value) {
+        this.menuType = 2;
+        this.menuAnim = true;
+        this.menu = true;
+      }
     },
   },
 };
@@ -90,6 +116,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 1;
   }
 
   .bottom-bar {
@@ -168,7 +195,7 @@ export default {
     }
 
     .start-menu {
-      background: rgba(255, 255, 255, .6);
+      background: rgba(255, 255, 255, 1);
     }
 
     .button {
@@ -179,6 +206,7 @@ export default {
       color: rgb(102, 102, 102);
       cursor: pointer;
       border: none;
+      outline: none;
     }
   }
 
