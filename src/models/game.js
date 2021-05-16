@@ -2,13 +2,14 @@ import GameMap from './game-map';
 import createShape from './create-shape';
 
 export default class Game {
-  constructor() {
-    this.gameMap = new GameMap(this);
+  constructor(width = 16, height = 20) {
+    this.gameMap = new GameMap(this, width, height);
     this.gameIntervalInstance = null;
     this.gameInterval = 500;
     this.createShape = createShape.bind(this);
     this.gameMap.onEnd = this.onEnd.bind(this);
     this.controlsActive = false;
+    this.score = 0;
 
     document.addEventListener('keydown', this.onKeyDown.bind(this));
   }

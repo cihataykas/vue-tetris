@@ -18,6 +18,12 @@
       </div>
     </div>
     <div class="bg" />
+    <div v-if="menu" ref="menu" :class="['start-menu animate__animated', { animate__bounceInDown: menuAnim, animate__bounceOutDown: !menuAnim, } ]">
+      <button class="button" @click="onClickPlay">Click to Play!</button>
+    </div>
+    <div v-show="bottomBar" class="bottom-bar animate__animated animate__bounceInUp">
+      <div>SCORE: {{ game.score }}</div>
+    </div>
   </div>
 </template>
 
@@ -33,16 +39,33 @@ export default {
   },
   data() {
     return {
+      width: 16,
+      height: 20,
+      bottomBar: false,
+      menu: true,
+      menuAnim: true,
       showTileIds: false,
       game: null,
     };
   },
   mounted() {
-    this.game = new Game();
-    this.game.start();
+    this.game = new Game(this.width, this.height);
+    this.$refs.menu.addEventListener('animationend', () => {
+      if (!this.menuAnim) {
+        this.menu = false;
+      }
+    });
   },
   destroyed() {
     this.game.destroy();
+    this.$refs.menu.removeEventListener('animationend');
+  },
+  methods: {
+    onClickPlay() {
+      this.menuAnim = false;
+      this.bottomBar = true;
+      this.game.start();
+    },
   },
 };
 </script>
@@ -53,6 +76,33 @@ export default {
     margin: auto;
     overflow: hidden;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 850px;
+  }
+
+  .start-menu {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .bottom-bar {
+    width: 100;
+    min-height: 50px;
+    background: black;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 25px;
   }
 
   .bg {
@@ -115,6 +165,20 @@ export default {
           background-color: #fe8602;
         }
       }
+    }
+
+    .start-menu {
+      background: rgba(255, 255, 255, .6);
+    }
+
+    .button {
+      font-size: 50px;
+      padding: 10px;
+      background: #fff;
+      font-weight: bold;
+      color: rgb(102, 102, 102);
+      cursor: pointer;
+      border: none;
     }
   }
 

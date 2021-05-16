@@ -60,6 +60,7 @@ export default class GameMap {
         for (const rowIndex of rowsIndexsToRemove) {
           this.landedTiles.splice(rowIndex, 1);
           this.landedTiles.unshift([...this.landedTiles[0]]);
+          this.game.score += 10;
         }
 
         this.game.resume();
