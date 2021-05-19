@@ -1,6 +1,10 @@
 <template>
   <div class="vue-tetris theme-light">
-    <tiles :show="isGame" :tiles="tiles" :show-tile-ids="showTileIds" />
+    <tiles
+      :show="isGame"
+      :tiles="tiles"
+      :show-tile-ids="showTileIds"
+    />
     <game-menu
       :show="menu"
       :type="menuType"

@@ -1,6 +1,14 @@
 <template>
-  <div v-if="show" class="bottom-bar animate__animated animate__bounceInUp">
-    <div class="animate__animated animate__tada" :key="score" >SCORE: {{ score }}</div>
+  <div
+    v-if="show"
+    class="bottom-bar animate__animated animate__bounceInUp"
+  >
+    <div
+      class="animate__animated animate__tada"
+      :key="score"
+    >
+      SCORE: {{ score }}
+    </div>
   </div>
 </template>
 

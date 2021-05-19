@@ -1,11 +1,26 @@
 <template>
-  <div v-if="show" ref="menu" :class="['start-menu animate__animated animate__bounceInDown']">
-    <button v-if="type === 1" class="button" @click="$emit('click-play')">Click to Play!</button>
+  <div
+    v-if="show"
+    ref="menu"
+    class="start-menu animate__animated animate__bounceInDown"
+  >
+    <button
+      v-if="type === 1"
+      class="button"
+      @click="$emit('click-play')"
+    >
+      Click to Play!
+    </button>
     <div v-if="type === 2">
       <div :style="{ fontSize: '28px', fontWeight: 'bold', color: 'white', background: 'black', padding: '10px' }">
         Your Score is {{ score }}
       </div>
-      <button class="button" @click="$emit('click-play-again')">Play Again!</button>
+      <button
+        class="button"
+        @click="$emit('click-play-again')"
+      >
+        Play Again!
+      </button>
     </div>
   </div>
 </template>
