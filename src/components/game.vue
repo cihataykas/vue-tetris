@@ -1,49 +1,46 @@
 <template>
   <div class="vue-tetris theme-light">
-    <div v-if="game" class="tile-container">
-      <div
-        v-for="(tileRow, tileRowIndex) in tiles" :key="tileRowIndex"
-        class="tile-row"
-      >
-      <div
-        v-for="(tile, tileIndex) in tileRow" :key="tileIndex"
-        :class="['tile', tile.animationClass, { active: tile.value }]"
-        :style="{
-          background: `linear-gradient(to right bottom, rgb(255, 255, 255) 50%, ${tile.color} 50%)`,
-        }"
-        >
-        <div :style="{ backgroundColor: tile.color }" class="tile-part" />
-        <span v-if="showTileIds">{{ tile.value }}</span>
-        </div>
-      </div>
-    </div>
+    <tiles :show="isGame" :tiles="tiles" :show-tile-ids="showTileIds" />
+    <game-menu
+      :show="menu"
+      :type="menuType"
+      :score="score"
+      @click-play-again="onClickPlay"
+      @click-play="onClickPlay"
+    />
+    <bottom-bar
+      :show="bottomBar"
+      :score="score"
+    />
     <div class="bg" />
-    <div v-if="menu" ref="menu" :class="['start-menu animate__animated', { animate__bounceInDown: menuAnim, animate__bounceOutDown: !menuAnim, } ]">
-      <button v-if="menuType === 1" class="button" @click="onClickPlay">Click to Play!</button>
-      <div v-if="menuType === 2">
-        <div :style="{ fontSize: '28px', fontWeight: 'bold', color: 'white', background: 'black', padding: '10px' }">
-          Your Score is {{ game.score }}
-        </div>
-        <button class="button" @click="onClickPlay">Play Again!</button>
-      </div>
-    </div>
-    <div v-if="bottomBar" class="bottom-bar animate__animated animate__bounceInUp">
-      <div class="animate__animated animate__tada" :key="game.score" >SCORE: {{ game.score }}</div>
-    </div>
   </div>
 </template>
 
 <script>
 
 import Game from '../models';
+import GameMenu from './game-menu.vue';
+import BottomBar from './bottom-bar.vue';
+import Tiles from './tiles.vue';
 
 export default {
+  components: {
+    GameMenu,
+    BottomBar,
+    Tiles,
+  },
   computed: {
+    isGame() {
+      return !!this.game;
+    },
+    score() {
+      return this.game?.score;
+    },
     isEnd() {
       return this.game?.gameMap?.isEnd;
     },
     tiles() {
-      return this.game.gameMap.tiles;
+      return this.game?.gameMap.tiles;
     },
   },
   data() {
@@ -53,27 +50,19 @@ export default {
       bottomBar: false,
       menu: true,
       menuType: 1,
-      menuAnim: true,
       showTileIds: false,
       game: null,
     };
   },
   mounted() {
     this.createNewGame();
-
-    this.$refs.menu.addEventListener('animationend', () => {
-      if (!this.menuAnim) {
-        this.menu = false;
-      }
-    });
   },
   destroyed() {
     this.game.destroy();
-    this.$refs.menu.removeEventListener('animationend');
   },
   methods: {
     onClickPlay() {
-      this.menuAnim = false;
+      this.menu = false;
       this.bottomBar = true;
 
       if (this.isEnd) {
@@ -90,7 +79,6 @@ export default {
     isEnd(value) {
       if (value) {
         this.menuType = 2;
-        this.menuAnim = true;
         this.menu = true;
       }
     },
@@ -98,7 +86,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 
   .vue-tetris {
     margin: auto;
@@ -107,31 +95,6 @@ export default {
     display: flex;
     flex-direction: column;
     min-height: 850px;
-  }
-
-  .start-menu {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
-  .bottom-bar {
-    width: 100;
-    min-height: 50px;
-    background: black;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 10px;
-    font-weight: bold;
-    font-size: 25px;
   }
 
   .bg {
@@ -144,33 +107,6 @@ export default {
     height: 100%;
     z-index: 0;
     opacity: .05;
-  }
-
-  .tile-container {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .tile-row {
-    display: flex;
-    flex-wrap: nowrap;
-    width: 100%;
-  }
-
-  .tile {
-    position: relative;
-    width: 40px;
-    height: 40px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #000;
-    line-height: 40px;
-    box-sizing: border-box;
-
-    &.active {
-      background: red;
-      z-index: 1;
-    }
   }
 
   .theme-light {
@@ -198,17 +134,6 @@ export default {
 
     .start-menu {
       background: rgba(255, 255, 255, .76);
-    }
-
-    .button {
-      font-size: 50px;
-      padding: 10px;
-      background: transparent;
-      font-weight: bold;
-      color: black;
-      cursor: pointer;
-      border: none;
-      outline: none;
     }
   }
 
