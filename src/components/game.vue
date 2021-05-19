@@ -92,6 +92,11 @@ export default {
 
 <style lang="scss">
 
+  body, html {
+    margin: 0;
+    padding: 0;
+  }
+
   .vue-tetris {
     margin: auto;
     overflow: hidden;
@@ -141,4 +146,17 @@ export default {
     }
   }
 
+  @media screen and (max-width: 992px) {
+    .vue-tetris {
+      min-height: auto;
+      padding-top: 20px;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .tile {
+      width: calc(100vw / 16);
+      height: calc(90vw / 16);
+    }
+  }
 </style>
